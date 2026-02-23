@@ -3,131 +3,159 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sequence Live</title>
+<title>సీక్వెన్స్</title>
 
 <style>
 :root{
 --bg:#020617;
 --card:#0f172a;
 --accent:#3b82f6;
---text:#fff;
 }
 
 body{
 margin:0;
 font-family:system-ui;
-background:linear-gradient(180deg,#020617,#020617 60%,#01030a);
-color:var(--text);
+background:linear-gradient(180deg,#020617,#01030a);
+color:white;
 }
 
 /* layout */
 .page{display:none;padding:20px;max-width:900px;margin:auto}
 .active{display:block}
 
-/* hero */
+/* hero india vibe */
 .hero{
-height:100vh;
+height:55vh;
+border-bottom-left-radius:30px;
+border-bottom-right-radius:30px;
+background:
+linear-gradient(#00000066,#00000066),
+url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=1200') center/cover;
 display:flex;
 flex-direction:column;
 justify-content:center;
 align-items:center;
 text-align:center;
-background:
-radial-gradient(circle at 20% 20%,#1e3a8a33,transparent),
-radial-gradient(circle at 80% 80%,#2563eb33,transparent);
 }
 
 .logo{
-font-size:38px;
+font-size:34px;
 font-weight:800;
 background:linear-gradient(90deg,#60a5fa,#22c55e,#f59e0b);
 -webkit-background-clip:text;
 -webkit-text-fill-color:transparent;
 }
 
-.subtitle{opacity:.7;margin-top:6px}
-
-/* ui */
-button{
-padding:14px 18px;
-border:none;
-border-radius:14px;
-margin-top:12px;
-font-weight:600;
-background:linear-gradient(135deg,#3b82f6,#6366f1);
-color:white;
-box-shadow:0 10px 30px #2563eb33;
-cursor:pointer;
+/* cards */
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:12px;
+margin-top:14px;
 }
 
 .card{
 background:var(--card);
 padding:16px;
 border-radius:16px;
-margin:14px 0;
 box-shadow:0 10px 30px #00000055;
+}
+
+.big{font-weight:700}
+
+/* buttons */
+button{
+padding:14px;
+border:none;
+border-radius:14px;
+background:linear-gradient(135deg,#3b82f6,#6366f1);
+color:white;
+font-weight:600;
+width:100%;
+}
+
+/* current affairs scroll */
+.marquee{
+overflow:hidden;
+white-space:nowrap;
+margin-top:12px;
+}
+
+.marquee span{
+display:inline-block;
+padding-left:100%;
+animation:scroll 18s linear infinite;
+opacity:.8;
+}
+
+@keyframes scroll{
+0%{transform:translateX(0)}
+100%{transform:translateX(-100%)}
+}
+
+/* timeline */
+.step{
+background:#0b1220;
+padding:12px;
+border-radius:12px;
+margin-top:10px;
+border-left:4px solid var(--accent);
 }
 
 input{
 width:100%;
-padding:16px;
-border-radius:14px;
+padding:14px;
+border-radius:12px;
 border:none;
+margin-top:10px;
 background:#0b1220;
 color:white;
-margin-top:10px;
-}
-
-/* timeline */
-.timeline{
-display:flex;
-flex-direction:column;
-gap:12px;
-margin-top:14px;
-}
-
-.step{
-background:#0b1220;
-padding:14px;
-border-radius:14px;
-border-left:4px solid var(--accent);
-}
-
-/* loader */
-.loader{
-height:4px;
-background:linear-gradient(90deg,#3b82f6,#22c55e,#f59e0b);
-animation:load 1s linear infinite;
-border-radius:10px;
-}
-
-@keyframes load{
-0%{transform:translateX(-100%)}
-100%{transform:translateX(100%)}
 }
 </style>
 </head>
 
 <body>
 
-<!-- HOME -->
-<div id="home" class="page active hero">
-<div class="logo">Sequence</div>
-<div class="subtitle">Live Timeline Learning</div>
-<button onclick="go('learn')">Start Learning</button>
+<!-- DASHBOARD -->
+<div id="dash" class="page active">
+
+<div class="hero">
+<div class="logo">సీక్వెన్స్</div>
+<div>తెలుగు విద్యార్థుల కోసం టైమ్‌లైన్ లెర్నింగ్</div>
+</div>
+
+<div class="grid">
+<div class="card"><div class="big">📚 చదివిన అంశాలు</div><div id="count">0</div></div>
+<div class="card"><div class="big">📅 నెల ప్రోగ్రెస్</div>68%</div>
+<div class="card"><button onclick="go('learn')">టాపిక్ నేర్చుకోండి</button></div>
+<div class="card"><button onclick="go('quiz')">క్విజ్</button></div>
+</div>
+
+<div class="card">
+<div class="big">📰 కరెంట్ అఫైర్స్</div>
+<div class="marquee">
+<span id="news">లోడింగ్ వార్తలు...</span>
+</div>
+</div>
+
 </div>
 
 <!-- LEARN -->
 <div id="learn" class="page">
-<h2>Ask Topic</h2>
-
-<input id="topicInput" placeholder="Example: Kargil War / GST / Police reforms">
-
-<button onclick="loadTopic()">Generate Timeline</button>
+<h2>టాపిక్ అడగండి</h2>
+<input id="topicInput" placeholder="ఉదా: కార్గిల్ యుద్ధం / GST">
+<button onclick="loadTopic()">టైమ్‌లైన్ చూపించు</button>
 
 <div id="result"></div>
 
-<button onclick="go('home')">Back</button>
+<button onclick="go('dash')">← డాష్‌బోర్డ్</button>
+</div>
+
+<!-- QUIZ -->
+<div id="quiz" class="page">
+<h2>క్విజ్</h2>
+<div class="card">భారత రాజ్యాంగం ఎప్పుడు అమలులోకి వచ్చింది? → 1950 ✅</div>
+<button onclick="go('dash')">← డాష్‌బోర్డ్</button>
 </div>
 
 <script>
@@ -137,38 +165,48 @@ document.getElementById(id).classList.add('active')
 window.scrollTo(0,0)
 }
 
+/* topic count */
+let count=Number(localStorage.getItem("count")||0)
+document.getElementById("count").innerText=count
+
+/* LIVE TOPIC */
 async function loadTopic(){
 const topic=document.getElementById("topicInput").value
 if(!topic)return
 
-document.getElementById("result").innerHTML=
-`<div class="card"><div class="loader"></div></div>`
+document.getElementById("result").innerHTML='<div class="card">లోడింగ్...</div>'
 
 try{
 const res=await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topic)}`)
 const data=await res.json()
+const text=data.extract||"డేటా లేదు"
 
-const text=data.extract || "No data available"
-
-/* simple sequence extraction */
-const steps=text.split(". ").slice(0,7)
+const steps=text.split(". ").slice(0,6)
 
 document.getElementById("result").innerHTML=
 `<div class="card">
-<b>Timeline Sequence</b>
-<div class="timeline">
+<b>టైమ్‌లైన్</b>
 ${steps.map(s=>`<div class="step">${s}</div>`).join("")}
-</div>
-</div>
-
-<div class="card">
-<b>Summary</b><br>${text}
 </div>`
 
+count++
+localStorage.setItem("count",count)
+document.getElementById("count").innerText=count
+
 }catch(e){
-document.getElementById("result").innerHTML=`<div class="card">Live data failed</div>`
+document.getElementById("result").innerHTML='<div class="card">డేటా లోడ్ కాలేదు</div>'
 }
 }
+
+/* CURRENT AFFAIRS (simple live feed) */
+async function loadNews(){
+try{
+const res=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/India")
+const data=await res.json()
+document.getElementById("news").innerText=data.extract
+}catch(e){}
+}
+loadNews()
 </script>
 
 </body>
