@@ -3,23 +3,108 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Sequence AI</title>
+<title>Sequence Live</title>
 
 <style>
-body{margin:0;font-family:system-ui;background:#020617;color:#fff}
-.page{display:none;padding:20px}
-.active{display:block}
-
-.hero{
-background:url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=1200') center/cover;
-height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;text-align:center
+:root{
+--bg:#020617;
+--card:#0f172a;
+--accent:#3b82f6;
+--text:#fff;
 }
 
-button{padding:12px 18px;border:none;border-radius:12px;margin:6px;font-weight:600;background:#2563eb;color:#fff}
-.card{background:#0f172a;padding:16px;border-radius:14px;margin:12px 0}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-input{width:100%;padding:14px;border-radius:10px;border:none;margin:10px 0}
-.big{font-size:22px;font-weight:700}
+body{
+margin:0;
+font-family:system-ui;
+background:linear-gradient(180deg,#020617,#020617 60%,#01030a);
+color:var(--text);
+}
+
+/* layout */
+.page{display:none;padding:20px;max-width:900px;margin:auto}
+.active{display:block}
+
+/* hero */
+.hero{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+background:
+radial-gradient(circle at 20% 20%,#1e3a8a33,transparent),
+radial-gradient(circle at 80% 80%,#2563eb33,transparent);
+}
+
+.logo{
+font-size:38px;
+font-weight:800;
+background:linear-gradient(90deg,#60a5fa,#22c55e,#f59e0b);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.subtitle{opacity:.7;margin-top:6px}
+
+/* ui */
+button{
+padding:14px 18px;
+border:none;
+border-radius:14px;
+margin-top:12px;
+font-weight:600;
+background:linear-gradient(135deg,#3b82f6,#6366f1);
+color:white;
+box-shadow:0 10px 30px #2563eb33;
+cursor:pointer;
+}
+
+.card{
+background:var(--card);
+padding:16px;
+border-radius:16px;
+margin:14px 0;
+box-shadow:0 10px 30px #00000055;
+}
+
+input{
+width:100%;
+padding:16px;
+border-radius:14px;
+border:none;
+background:#0b1220;
+color:white;
+margin-top:10px;
+}
+
+/* timeline */
+.timeline{
+display:flex;
+flex-direction:column;
+gap:12px;
+margin-top:14px;
+}
+
+.step{
+background:#0b1220;
+padding:14px;
+border-radius:14px;
+border-left:4px solid var(--accent);
+}
+
+/* loader */
+.loader{
+height:4px;
+background:linear-gradient(90deg,#3b82f6,#22c55e,#f59e0b);
+animation:load 1s linear infinite;
+border-radius:10px;
+}
+
+@keyframes load{
+0%{transform:translateX(-100%)}
+100%{transform:translateX(100%)}
+}
 </style>
 </head>
 
@@ -27,108 +112,63 @@ input{width:100%;padding:14px;border-radius:10px;border:none;margin:10px 0}
 
 <!-- HOME -->
 <div id="home" class="page active hero">
-<h1>Sequence AI</h1>
-<p>AI Timeline Learning</p>
-<button onclick="go('dash')">Start</button>
-</div>
-
-<!-- DASHBOARD -->
-<div id="dash" class="page">
-<div class="big">Dashboard</div>
-
-<div class="grid">
-<button onclick="go('learn')">🧠 Ask Topic</button>
-<button onclick="go('notes')">📝 Notes</button>
-</div>
-
-<div class="card">Ask any topic → AI gives sequence timeline</div>
-
-<button onclick="go('home')">Back</button>
+<div class="logo">Sequence</div>
+<div class="subtitle">Live Timeline Learning</div>
+<button onclick="go('learn')">Start Learning</button>
 </div>
 
 <!-- LEARN -->
 <div id="learn" class="page">
-<div class="big">Ask Topic</div>
+<h2>Ask Topic</h2>
 
-<input id="topicInput" placeholder="Example: Kargil war / Police reforms / GST">
-<button onclick="askAI()">Generate Sequence</button>
+<input id="topicInput" placeholder="Example: Kargil War / GST / Police reforms">
 
-<div id="result" class="card">Result appears here</div>
+<button onclick="loadTopic()">Generate Timeline</button>
 
-<button onclick="go('dash')">Back</button>
-</div>
+<div id="result"></div>
 
-<!-- NOTES -->
-<div id="notes" class="page">
-<div class="big">Notes</div>
-<input id="noteText" placeholder="Write note">
-<button onclick="saveNote()">Save</button>
-<div id="notesList"></div>
-<button onclick="go('dash')">Back</button>
+<button onclick="go('home')">Back</button>
 </div>
 
 <script>
-
-/* NAV */
 function go(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
 document.getElementById(id).classList.add('active')
 window.scrollTo(0,0)
 }
 
-/* 🔑 PUT YOUR GEMINI API KEY HERE */
-const API_KEY="AIzaSyDzMI7zK63tVyVFH0p1i-nXXSd1KECOLRk"
-
-/* AI */
-async function askAI(){
+async function loadTopic(){
 const topic=document.getElementById("topicInput").value
 if(!topic)return
 
-document.getElementById("result").innerText="Loading AI..."
-
-const prompt=`
-Give chronological sequence timeline for topic: ${topic}.
-Explain step by step events.
-Give short Telugu explanation.
-Simple for competitive exams.
-`
+document.getElementById("result").innerHTML=
+`<div class="card"><div class="loader"></div></div>`
 
 try{
-const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,{
-method:"POST",
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-contents:[{parts:[{text:prompt}]}]
-})
-})
-
+const res=await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topic)}`)
 const data=await res.json()
-const text=data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response"
 
-document.getElementById("result").innerText=text
+const text=data.extract || "No data available"
+
+/* simple sequence extraction */
+const steps=text.split(". ").slice(0,7)
+
+document.getElementById("result").innerHTML=
+`<div class="card">
+<b>Timeline Sequence</b>
+<div class="timeline">
+${steps.map(s=>`<div class="step">${s}</div>`).join("")}
+</div>
+</div>
+
+<div class="card">
+<b>Summary</b><br>${text}
+</div>`
 
 }catch(e){
-document.getElementById("result").innerText="AI error — check API key"
+document.getElementById("result").innerHTML=`<div class="card">Live data failed</div>`
 }
 }
-
-/* NOTES */
-function saveNote(){
-const text=document.getElementById("noteText").value
-if(!text)return
-let notes=JSON.parse(localStorage.getItem("notes")||"[]")
-notes.push(text)
-localStorage.setItem("notes",JSON.stringify(notes))
-renderNotes()
-document.getElementById("noteText").value=""
-}
-
-function renderNotes(){
-let notes=JSON.parse(localStorage.getItem("notes")||"[]")
-document.getElementById("notesList").innerHTML=notes.map(n=>`<div class="card">${n}</div>`).join("")
-}
-renderNotes()
-
 </script>
 
 </body>
