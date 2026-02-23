@@ -3,211 +3,201 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>సీక్వెన్స్</title>
+<title>SequenceIAS</title>
 
 <style>
-:root{
---bg:#020617;
---card:#0f172a;
---accent:#3b82f6;
-}
-
 body{
 margin:0;
 font-family:system-ui;
-background:linear-gradient(180deg,#020617,#01030a);
+background:#020617;
 color:white;
 }
 
-/* layout */
-.page{display:none;padding:20px;max-width:900px;margin:auto}
-.active{display:block}
-
-/* hero india vibe */
-.hero{
-height:55vh;
-border-bottom-left-radius:30px;
-border-bottom-right-radius:30px;
-background:
-linear-gradient(#00000066,#00000066),
-url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=1200') center/cover;
+/* header */
+.header{
+padding:16px;
 display:flex;
-flex-direction:column;
-justify-content:center;
+justify-content:space-between;
 align-items:center;
-text-align:center;
 }
 
-.logo{
-font-size:34px;
-font-weight:800;
-background:linear-gradient(90deg,#60a5fa,#22c55e,#f59e0b);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
+.brand{
+display:flex;
+gap:10px;
+align-items:center;
+font-weight:700;
+font-size:20px;
 }
 
-/* cards */
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:12px;
+.flag{
+width:36px;height:36px;border-radius:10px;
+background:linear-gradient(orange,white,green);
+}
+
+.lang{
+display:flex;gap:8px;
+}
+.lang div{
+padding:6px 10px;border-radius:20px;
+background:#111827;border:1px solid #1f2937;font-size:12px;
+}
+
+/* icon tabs */
+.tabs{
+margin:10px 16px;
+display:flex;
+gap:10px;
+background:#071024;
+padding:8px;
+border-radius:16px;
+}
+.tab{
+width:52px;height:52px;
+border-radius:12px;
+display:flex;align-items:center;justify-content:center;
+background:#111827;font-size:22px;
+}
+
+/* assistant */
+.card{
+background:#071024;
+margin:16px;
+padding:16px;
+border-radius:18px;
+}
+
+.bot{
+background:#0b1220;
+padding:14px;
+border-radius:14px;
+margin-top:10px;
+}
+
+/* chips */
+.chips{
+display:flex;
+flex-wrap:wrap;
+gap:10px;
+margin-top:10px;
+}
+.chip{
+padding:8px 14px;
+border-radius:20px;
+background:#1a0f0a;
+border:1px solid #fb923c55;
+color:#fb923c;
+font-size:13px;
+}
+
+/* search */
+.search{
+display:flex;
+gap:10px;
 margin-top:14px;
 }
-
-.card{
-background:var(--card);
-padding:16px;
-border-radius:16px;
-box-shadow:0 10px 30px #00000055;
-}
-
-.big{font-weight:700}
-
-/* buttons */
-button{
+.search input{
+flex:1;
 padding:14px;
+border-radius:14px;
+border:none;
+background:#0b1220;
+color:white;
+}
+.search button{
+padding:14px 18px;
 border:none;
 border-radius:14px;
-background:linear-gradient(135deg,#3b82f6,#6366f1);
-color:white;
+background:#fb923c;
+color:black;
 font-weight:600;
-width:100%;
 }
 
-/* current affairs scroll */
-.marquee{
-overflow:hidden;
-white-space:nowrap;
-margin-top:12px;
+/* current affairs */
+.ca-card{
+background:#071024;
+margin:16px;
+padding:16px;
+border-radius:18px;
 }
 
-.marquee span{
-display:inline-block;
-padding-left:100%;
-animation:scroll 18s linear infinite;
-opacity:.8;
+/* stats */
+.stats{
+display:grid;
+grid-template-columns:repeat(4,1fr);
+margin:16px;
+gap:10px;
+text-align:center;
 }
-
-@keyframes scroll{
-0%{transform:translateX(0)}
-100%{transform:translateX(-100%)}
-}
-
-/* timeline */
-.step{
-background:#0b1220;
-padding:12px;
-border-radius:12px;
-margin-top:10px;
-border-left:4px solid var(--accent);
-}
-
-input{
-width:100%;
+.stat{
+background:#071024;
 padding:14px;
-border-radius:12px;
-border:none;
-margin-top:10px;
-background:#0b1220;
-color:white;
+border-radius:14px;
 }
+.big{font-weight:700;color:#fb923c;font-size:18px}
+.small{font-size:12px;opacity:.7}
 </style>
 </head>
 
 <body>
 
-<!-- DASHBOARD -->
-<div id="dash" class="page active">
-
-<div class="hero">
-<div class="logo">సీక్వెన్స్</div>
-<div>తెలుగు విద్యార్థుల కోసం టైమ్‌లైన్ లెర్నింగ్</div>
+<!-- header -->
+<div class="header">
+<div class="brand">
+<div class="flag"></div>
+<div>SequenceIAS</div>
+</div>
+<div class="lang">
+<div style="background:#fb923c;color:black">తె</div>
+<div>हि</div>
+<div>EN</div>
+</div>
 </div>
 
-<div class="grid">
-<div class="card"><div class="big">📚 చదివిన అంశాలు</div><div id="count">0</div></div>
-<div class="card"><div class="big">📅 నెల ప్రోగ్రెస్</div>68%</div>
-<div class="card"><button onclick="go('learn')">టాపిక్ నేర్చుకోండి</button></div>
-<div class="card"><button onclick="go('quiz')">క్విజ్</button></div>
+<!-- tabs -->
+<div class="tabs">
+<div class="tab">🏠</div>
+<div class="tab">📝</div>
+<div class="tab">📅</div>
+<div class="tab">📊</div>
 </div>
 
+<!-- assistant -->
 <div class="card">
-<div class="big">📰 కరెంట్ అఫైర్స్</div>
-<div class="marquee">
-<span id="news">లోడింగ్ వార్తలు...</span>
+<b>🤖 AI అసిస్టెంట్</b>
+<div class="bot">
+నమస్కారం 🙏 SequenceIAS కి స్వాగతం.  
+తెలుగులో ఏ టాపిక్ అడిగినా టైమ్‌లైన్ ఇస్తాను.
+</div>
+
+<div class="chips">
+<div class="chip">UPI ఏమిటి?</div>
+<div class="chip">చంద్రయాన్ 3</div>
+<div class="chip">Article 370</div>
+<div class="chip">BNS చట్టం</div>
+</div>
+
+<div class="search">
+<input placeholder="తెలుగులో అడగండి...">
+<button>పంపు ↑</button>
 </div>
 </div>
 
+<!-- current affairs -->
+<div class="ca-card">
+<b>🌍 కరెంట్ అఫైర్స్ డ్యాష్‌బోర్డ్</b>
+<div style="margin-top:10px;font-size:18px;font-weight:600">
+భారత్-చైనా సంబంధాలు
+</div>
+<div style="color:#fb923c;margin-top:4px">Foreign Policy</div>
 </div>
 
-<!-- LEARN -->
-<div id="learn" class="page">
-<h2>టాపిక్ అడగండి</h2>
-<input id="topicInput" placeholder="ఉదా: కార్గిల్ యుద్ధం / GST">
-<button onclick="loadTopic()">టైమ్‌లైన్ చూపించు</button>
-
-<div id="result"></div>
-
-<button onclick="go('dash')">← డాష్‌బోర్డ్</button>
+<!-- stats -->
+<div class="stats">
+<div class="stat"><div class="big">1.2M+</div><div class="small">Students</div></div>
+<div class="stat"><div class="big">3</div><div class="small">Languages</div></div>
+<div class="stat"><div class="big">500+</div><div class="small">Topics</div></div>
+<div class="stat"><div class="big">AI</div><div class="small">Powered</div></div>
 </div>
-
-<!-- QUIZ -->
-<div id="quiz" class="page">
-<h2>క్విజ్</h2>
-<div class="card">భారత రాజ్యాంగం ఎప్పుడు అమలులోకి వచ్చింది? → 1950 ✅</div>
-<button onclick="go('dash')">← డాష్‌బోర్డ్</button>
-</div>
-
-<script>
-function go(id){
-document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
-document.getElementById(id).classList.add('active')
-window.scrollTo(0,0)
-}
-
-/* topic count */
-let count=Number(localStorage.getItem("count")||0)
-document.getElementById("count").innerText=count
-
-/* LIVE TOPIC */
-async function loadTopic(){
-const topic=document.getElementById("topicInput").value
-if(!topic)return
-
-document.getElementById("result").innerHTML='<div class="card">లోడింగ్...</div>'
-
-try{
-const res=await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(topic)}`)
-const data=await res.json()
-const text=data.extract||"డేటా లేదు"
-
-const steps=text.split(". ").slice(0,6)
-
-document.getElementById("result").innerHTML=
-`<div class="card">
-<b>టైమ్‌లైన్</b>
-${steps.map(s=>`<div class="step">${s}</div>`).join("")}
-</div>`
-
-count++
-localStorage.setItem("count",count)
-document.getElementById("count").innerText=count
-
-}catch(e){
-document.getElementById("result").innerHTML='<div class="card">డేటా లోడ్ కాలేదు</div>'
-}
-}
-
-/* CURRENT AFFAIRS (simple live feed) */
-async function loadNews(){
-try{
-const res=await fetch("https://en.wikipedia.org/api/rest_v1/page/summary/India")
-const data=await res.json()
-document.getElementById("news").innerText=data.extract
-}catch(e){}
-}
-loadNews()
-</script>
 
 </body>
 </html>
