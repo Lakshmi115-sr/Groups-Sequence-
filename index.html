@@ -7,47 +7,17 @@
 
 <style>
 body{margin:0;font-family:system-ui;background:#020617;color:#fff}
-
 .page{display:none;padding:20px}
 .active{display:block}
-
-.center{
-display:flex;
-flex-direction:column;
-justify-content:center;
-align-items:center;
-height:100vh;
-text-align:center;
-}
 
 .hero{
 background:url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=1200') center/cover;
 height:100vh;
 display:flex;
-flex-direction:column;
 justify-content:center;
 align-items:center;
-backdrop-filter:blur(6px);
-}
-
-.overlay{
-background:rgba(0,0,0,.55);
-position:absolute;
-inset:0;
-}
-
-.heroContent{
-position:relative;
-z-index:2;
+flex-direction:column;
 text-align:center;
-}
-
-.big{
-font-size:38px;
-font-weight:800;
-background:linear-gradient(90deg,#60a5fa,#22c55e,#f59e0b);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
 }
 
 button{
@@ -61,8 +31,6 @@ background:#2563eb;
 color:#fff;
 }
 
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-
 .card{
 background:#0f172a;
 padding:14px;
@@ -71,54 +39,38 @@ margin:10px 0;
 cursor:pointer;
 }
 
-input{
-width:100%;
-padding:12px;
-border-radius:10px;
-border:none;
-margin:8px 0;
-}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input{width:100%;padding:12px;border-radius:10px;border:none;margin:8px 0}
 </style>
 </head>
 
 <body>
 
-<!-- HERO INDIA -->
+<!-- HOME -->
 <div id="home" class="page active hero">
-<div class="overlay"></div>
-
-<div class="heroContent">
-<div class="big">Sequence AI</div>
+<h1>Sequence AI</h1>
 <p>IAS • IPS • Groups Preparation<br>తెలుగు విద్యార్థుల కోసం</p>
 <button onclick="go('dash')">Start Learning</button>
-</div>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dash" class="page">
 <h2>Dashboard</h2>
-
 <div class="grid">
 <button onclick="go('subjects')">Subjects</button>
 <button onclick="go('ask')">Ask Topic</button>
 <button onclick="go('quiz')">Quiz</button>
 <button onclick="go('summary')">Monthly</button>
 </div>
-
 <button onclick="go('home')">Back</button>
 </div>
 
 <!-- SUBJECTS -->
 <div id="subjects" class="page">
 <h2>Subjects</h2>
-
-<div class="card" onclick="openSubject('polity')">Polity</div>
-<div class="card" onclick="openSubject('history')">History</div>
-<div class="card" onclick="openSubject('geography')">Geography</div>
-<div class="card" onclick="openSubject('economy')">Economy</div>
-
-<div id="subjectResult"></div>
-
+<div class="card" onclick="showSeq('polity')">Polity</div>
+<div class="card" onclick="showSeq('geography')">Geography</div>
+<div id="seq"></div>
 <button onclick="go('dash')">Back</button>
 </div>
 
@@ -134,7 +86,7 @@ margin:8px 0;
 <!-- QUIZ -->
 <div id="quiz" class="page">
 <h2>Quiz</h2>
-<div class="card">Constitution అమలు → 1950 ✅</div>
+<div class="card">Constitution → 1950 ✅</div>
 <button onclick="go('dash')">Back</button>
 </div>
 
@@ -152,28 +104,21 @@ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
 document.getElementById(id).classList.add('active')
 }
 
-function openSubject(s){
-let seq=""
-
+function showSeq(s){
+let text=""
 if(s==="polity"){
-seq="Polity Sequence:<br>1 Constitution<br>2 Preamble<br>3 Rights<br>4 Parliament"
+text="Polity: Constitution → Rights → Parliament → Judiciary"
 }
 if(s==="geography"){
-seq="Geography Sequence:<br>1 Earth<br>2 Climate<br>3 India geography"
+text="Geography: Earth → Climate → India Geography"
 }
-if(s==="history"){
-seq="History Sequence:<br>Ancient → Medieval → Modern"
-}
-if(s==="economy"){
-seq="Economy Sequence:<br>Basics → Banking → Budget"
-}
-
-document.getElementById("subjectResult").innerHTML='<div class="card">'+seq+'</div>'
+document.getElementById("seq").innerHTML='<div class="card">'+text+'</div>'
 }
 
 function generate(){
-const t=document.getElementById('topic').value.toLowerCase()
-openSubject(t)
+const t=document.getElementById("topic").value.toLowerCase()
+showSeq(t)
+document.getElementById("result").innerHTML='<div class="card">Generated sequence above</div>'
 }
 </script>
 
