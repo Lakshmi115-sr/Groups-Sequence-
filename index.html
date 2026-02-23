@@ -12,14 +12,14 @@ body{margin:0;font-family:system-ui;background:#020617;color:#fff}
 
 .hero{
 background:url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=1200') center/cover;
-height:100vh;
-display:flex;justify-content:center;align-items:center;flex-direction:column;text-align:center
+height:100vh;display:flex;justify-content:center;align-items:center;flex-direction:column;text-align:center
 }
 
 button{padding:12px 18px;border:none;border-radius:12px;margin:6px;font-weight:600;background:#2563eb;color:#fff}
-.card{background:#0f172a;padding:14px;border-radius:14px;margin:10px 0}
-.stat{background:#0b1220;padding:12px;border-radius:12px;margin:8px 0}
-input,textarea{width:100%;padding:12px;border-radius:10px;border:none;margin:8px 0}
+.card{background:#0f172a;padding:16px;border-radius:14px;margin:12px 0}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+input{width:100%;padding:14px;border-radius:10px;border:none;margin:10px 0}
+.big{font-size:22px;font-weight:700}
 </style>
 </head>
 
@@ -28,34 +28,40 @@ input,textarea{width:100%;padding:12px;border-radius:10px;border:none;margin:8px
 <!-- HOME -->
 <div id="home" class="page active hero">
 <h1>Sequence AI</h1>
-<p>Topic → Sequence Learning<br>తెలుగు విద్యార్థుల కోసం</p>
-<button onclick="go('dash')">Start Learning</button>
+<p>AI Timeline Learning</p>
+<button onclick="go('dash')">Start</button>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dash" class="page">
-<h2>📊 Dashboard</h2>
-<div class="stat">Ask any topic → Get sequence</div>
+<div class="big">Dashboard</div>
 
-<button onclick="go('learn')">🧠 Learn Topic</button>
+<div class="grid">
+<button onclick="go('learn')">🧠 Ask Topic</button>
 <button onclick="go('notes')">📝 Notes</button>
+</div>
+
+<div class="card">Ask any topic → AI gives sequence timeline</div>
 
 <button onclick="go('home')">Back</button>
 </div>
 
 <!-- LEARN -->
 <div id="learn" class="page">
-<h2>Learn Topic</h2>
-<input id="topicInput" placeholder="Example: Kargil war / Constitution / Green revolution">
-<button onclick="learnTopic()">Generate Sequence</button>
-<div id="learnResult"></div>
+<div class="big">Ask Topic</div>
+
+<input id="topicInput" placeholder="Example: Kargil war / Police reforms / GST">
+<button onclick="askAI()">Generate Sequence</button>
+
+<div id="result" class="card">Result appears here</div>
+
 <button onclick="go('dash')">Back</button>
 </div>
 
 <!-- NOTES -->
 <div id="notes" class="page">
-<h2>Notes</h2>
-<textarea id="noteText" placeholder="Write notes"></textarea>
+<div class="big">Notes</div>
+<input id="noteText" placeholder="Write note">
 <button onclick="saveNote()">Save</button>
 <div id="notesList"></div>
 <button onclick="go('dash')">Back</button>
@@ -70,68 +76,40 @@ document.getElementById(id).classList.add('active')
 window.scrollTo(0,0)
 }
 
-/* EVENT SEQUENCE ENGINE */
-function learnTopic(){
-const t=document.getElementById("topicInput").value.toLowerCase()
+/* 🔑 PUT YOUR GEMINI API KEY HERE */
+const API_KEY="PASTE_GEMINI_API_KEY_HERE"
 
-let seq=[]
-let telugu=""
+/* AI */
+async function askAI(){
+const topic=document.getElementById("topicInput").value
+if(!topic)return
 
-/* KNOWN EXAMPLES */
+document.getElementById("result").innerText="Loading AI..."
 
-if(t.includes("kargil")){
-seq=[
-"India-Pakistan tension background",
-"Pakistani infiltration into Kargil",
-"India launches Operation Vijay",
-"Major high altitude battles",
-"India recaptures peaks",
-"War ends July 1999",
-"Impact on defence reforms"
-]
-telugu="కార్గిల్ యుద్ధం 1999లో జరిగింది. పాకిస్తాన్ చొరబాటుతో ప్రారంభమై భారత్ ఆపరేషన్ విజయ్ ద్వారా ప్రాంతాలను తిరిగి స్వాధీనం చేసుకుంది."
+const prompt=`
+Give chronological sequence timeline for topic: ${topic}.
+Explain step by step events.
+Give short Telugu explanation.
+Simple for competitive exams.
+`
+
+try{
+const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${API_KEY}`,{
+method:"POST",
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify({
+contents:[{parts:[{text:prompt}]}]
+})
+})
+
+const data=await res.json()
+const text=data?.candidates?.[0]?.content?.parts?.[0]?.text || "No response"
+
+document.getElementById("result").innerText=text
+
+}catch(e){
+document.getElementById("result").innerText="AI error — check API key"
 }
-
-else if(t.includes("constitution")){
-seq=[
-"British rule background",
-"Demand for constitution",
-"Constituent Assembly formation",
-"Drafting committee work",
-"Adoption 1949",
-"Implementation 1950"
-]
-telugu="భారత రాజ్యాంగం స్వాతంత్ర్యానంతరం రూపొందించబడింది మరియు 1950లో అమల్లోకి వచ్చింది."
-}
-
-else if(t.includes("green revolution")){
-seq=[
-"Food shortage background",
-"Introduction of HYV seeds",
-"Irrigation expansion",
-"Fertilizer usage increase",
-"Rise in agricultural production",
-"Impact on farmers and economy"
-]
-telugu="గ్రీన్ రివల్యూషన్ భారత వ్యవసాయ ఉత్పత్తిని పెంచిన ముఖ్యమైన దశ."
-}
-
-/* GENERIC INTELLIGENT STRUCTURE */
-
-else{
-seq=[
-"Background / context",
-"Causes / reasons",
-"Key events / stages",
-"Important people / factors",
-"Outcome / result",
-"Impact / significance"
-]
-telugu="ఈ అంశాన్ని అర్థం చేసుకోవడానికి ఈ క్రమంలో చదవాలి."
-}
-
-document.getElementById("learnResult").innerHTML=
-'<div class="card"><b>Sequence:</b><br>'+seq.join(" → ")+'<br><br><b>తెలుగు వివరణ:</b><br>'+telugu+'</div>'
 }
 
 /* NOTES */
