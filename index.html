@@ -13,54 +13,18 @@ body{margin:0;font-family:system-ui;background:#020617;color:#fff}
 .hero{
 background:url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=1200') center/cover;
 height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-flex-direction:column;
-text-align:center;
+display:flex;justify-content:center;align-items:center;
+flex-direction:column;text-align:center
 }
 
-h1{font-size:34px;margin:0}
+button{padding:12px 18px;border:none;border-radius:12px;margin:6px;font-weight:600;background:#2563eb;color:#fff}
 
-button{
-padding:12px 18px;
-border:none;
-border-radius:12px;
-margin:6px;
-font-weight:600;
-cursor:pointer;
-background:#2563eb;
-color:#fff;
-}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.card{background:#0f172a;padding:14px;border-radius:14px;margin:10px 0}
+.stat{background:#0b1220;padding:12px;border-radius:12px;margin:8px 0}
 
-.card{
-background:#0f172a;
-padding:14px;
-border-radius:14px;
-margin:10px 0;
-cursor:pointer;
-}
-
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
-
-.stat{
-background:#0b1220;
-padding:12px;
-border-radius:12px;
-margin:8px 0;
-}
-
-input{
-width:100%;
-padding:12px;
-border-radius:10px;
-border:none;
-margin:8px 0;
-}
+input,textarea{width:100%;padding:12px;border-radius:10px;border:none;margin:8px 0}
+.small{opacity:.7;font-size:13px}
 </style>
 </head>
 
@@ -73,19 +37,18 @@ margin:8px 0;
 <button onclick="go('dash')">Start Learning</button>
 </div>
 
-<!-- DASHBOARD -->
+<!-- DASH -->
 <div id="dash" class="page">
 <h2>📊 Dashboard</h2>
 
-<div class="stat">Continue: Polity → Fundamental Rights</div>
-<div class="stat">Daily Plan: Geography basics</div>
+<div class="stat">Continue: <span id="continueBox">Polity basics</span></div>
 <div class="stat">Weak Subject: Economy</div>
 
 <div class="grid">
 <button onclick="go('subjects')">📚 Subjects</button>
-<button onclick="go('ask')">🤖 Ask Topic</button>
-<button onclick="go('quiz')">📝 Quiz</button>
-<button onclick="go('summary')">📅 Monthly</button>
+<button onclick="go('learn')">🧠 Learn</button>
+<button onclick="go('notes')">📝 Notes</button>
+<button onclick="go('summary')">📅 Summary</button>
 </div>
 
 <button onclick="go('home')">Back</button>
@@ -93,92 +56,108 @@ margin:8px 0;
 
 <!-- SUBJECTS -->
 <div id="subjects" class="page">
-<h2>📚 Subjects</h2>
-
-<div class="grid">
-<div class="card" onclick="showSeq('polity')">🏛️ Polity</div>
-<div class="card" onclick="showSeq('history')">📜 History</div>
-<div class="card" onclick="showSeq('geography')">🌍 Geography</div>
-<div class="card" onclick="showSeq('economy')">💰 Economy</div>
-<div class="card" onclick="showSeq('environment')">🌱 Environment</div>
-<div class="card" onclick="showSeq('science')">🔬 Science & Tech</div>
-<div class="card" onclick="showSeq('current')">📰 Current Affairs</div>
-<div class="card" onclick="showSeq('ethics')">⚖️ Ethics</div>
-</div>
-
-<div id="seq"></div>
-
+<h2>Subjects</h2>
+<div class="grid" id="subjectsGrid"></div>
 <button onclick="go('dash')">Back</button>
 </div>
 
-<!-- ASK -->
-<div id="ask" class="page">
-<h2>🤖 Topic Sequence</h2>
-<input id="topic" placeholder="Topic అడగండి">
-<button onclick="generate()">Generate</button>
-<div id="result"></div>
+<!-- LEARN -->
+<div id="learn" class="page">
+<h2>Learn Topic</h2>
+<input id="topicInput" placeholder="Topic అడగండి">
+<button onclick="learnTopic()">Generate</button>
+<div id="learnResult"></div>
 <button onclick="go('dash')">Back</button>
 </div>
 
-<!-- QUIZ -->
-<div id="quiz" class="page">
-<h2>📝 Quiz</h2>
-<div class="card">Indian Constitution అమలు → 1950 ✅</div>
+<!-- NOTES -->
+<div id="notes" class="page">
+<h2>Notes</h2>
+<textarea id="noteText" placeholder="Write notes"></textarea>
+<button onclick="saveNote()">Save</button>
+<div id="notesList"></div>
 <button onclick="go('dash')">Back</button>
 </div>
 
 <!-- SUMMARY -->
 <div id="summary" class="page">
-<h2>📅 Monthly</h2>
-<div class="card">Studied: Polity</div>
-<div class="card">Weak: Economy</div>
-<div class="card">Quiz Score: 60%</div>
+<h2>Summary</h2>
+<div class="card">Topics learned stored locally</div>
 <button onclick="go('dash')">Back</button>
 </div>
 
 <script>
+
+/* ---------- UPSC DATABASE (inside file) ---------- */
+
+const syllabus={
+polity:["Constitution","Preamble","Rights","Parliament","Judiciary"],
+history:["Ancient","Medieval","Modern","Freedom struggle"],
+geography:["Earth","Climate","India geography","Resources"],
+economy:["Basics","Banking","Inflation","Budget"],
+environment:["Ecology","Biodiversity","Climate change"],
+science:["Physics","Biology","Space","Technology"],
+current:["Daily news","Schemes","International"],
+ethics:["Values","Integrity","Case studies"]
+}
+
+/* ---------- NAV ---------- */
+
 function go(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
 document.getElementById(id).classList.add('active')
 window.scrollTo(0,0)
 }
 
-function showSeq(s){
-let text=""
+/* ---------- SUBJECT RENDER ---------- */
 
-if(s==="polity"){
-text="Constitution → Preamble → Rights → Parliament → Judiciary → Federalism"
-}
-if(s==="history"){
-text="Ancient → Medieval → Modern → Freedom struggle → Post independence"
-}
-if(s==="geography"){
-text="Earth basics → Physical India → Climate → Rivers → Resources"
-}
-if(s==="economy"){
-text="Basics → Banking → Inflation → Budget → Growth → Schemes"
-}
-if(s==="environment"){
-text="Ecology → Biodiversity → Climate change → Conservation"
-}
-if(s==="science"){
-text="Physics → Biology → Space → Technology → AI"
-}
-if(s==="current"){
-text="Daily news → Monthly → Govt schemes → International"
-}
-if(s==="ethics"){
-text="Values → Integrity → Case studies → Governance"
+const subjectsGrid=document.getElementById("subjectsGrid")
+Object.keys(syllabus).forEach(s=>{
+subjectsGrid.innerHTML+=`<div class="card" onclick="selectSubject('${s}')">📚 ${s}</div>`
+})
+
+function selectSubject(s){
+localStorage.setItem("lastSubject",s)
+document.getElementById("continueBox").innerText=s
+go("learn")
+document.getElementById("topicInput").value=s
+learnTopic()
 }
 
-document.getElementById("seq").innerHTML='<div class="card">'+text+'</div>'
+/* ---------- LEARN (offline AI style) ---------- */
+
+function learnTopic(){
+const t=document.getElementById("topicInput").value.toLowerCase()
+
+let seq=syllabus[t]
+if(!seq){document.getElementById("learnResult").innerHTML='<div class="card">Topic not found</div>';return}
+
+let explain=`<b>Sequence:</b><br>${seq.join(" → ")}<br><br><b>తెలుగు వివరణ:</b><br>${t} గురించి ప్రాథమికంగా ఈ క్రమంలో చదవాలి.`
+
+document.getElementById("learnResult").innerHTML='<div class="card">'+explain+'</div>'
+
+localStorage.setItem("lastTopic",t)
 }
 
-function generate(){
-const t=document.getElementById("topic").value.toLowerCase()
-showSeq(t)
-document.getElementById("result").innerHTML='<div class="card">Sequence shown above</div>'
+/* ---------- NOTES ---------- */
+
+function saveNote(){
+const text=document.getElementById("noteText").value
+if(!text)return
+let notes=JSON.parse(localStorage.getItem("notes")||"[]")
+notes.push(text)
+localStorage.setItem("notes",JSON.stringify(notes))
+renderNotes()
+document.getElementById("noteText").value=""
 }
+
+function renderNotes(){
+let notes=JSON.parse(localStorage.getItem("notes")||"[]")
+document.getElementById("notesList").innerHTML=notes.map(n=>`<div class="card">${n}</div>`).join("")
+}
+
+renderNotes()
+
 </script>
 
 </body>
