@@ -20,6 +20,8 @@ flex-direction:column;
 text-align:center;
 }
 
+h1{font-size:34px;margin:0}
+
 button{
 padding:12px 18px;
 border:none;
@@ -39,8 +41,26 @@ margin:10px 0;
 cursor:pointer;
 }
 
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-input{width:100%;padding:12px;border-radius:10px;border:none;margin:8px 0}
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+.stat{
+background:#0b1220;
+padding:12px;
+border-radius:12px;
+margin:8px 0;
+}
+
+input{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:none;
+margin:8px 0;
+}
 </style>
 </head>
 
@@ -55,29 +75,46 @@ input{width:100%;padding:12px;border-radius:10px;border:none;margin:8px 0}
 
 <!-- DASHBOARD -->
 <div id="dash" class="page">
-<h2>Dashboard</h2>
+<h2>📊 Dashboard</h2>
+
+<div class="stat">Continue: Polity → Fundamental Rights</div>
+<div class="stat">Daily Plan: Geography basics</div>
+<div class="stat">Weak Subject: Economy</div>
+
 <div class="grid">
-<button onclick="go('subjects')">Subjects</button>
-<button onclick="go('ask')">Ask Topic</button>
-<button onclick="go('quiz')">Quiz</button>
-<button onclick="go('summary')">Monthly</button>
+<button onclick="go('subjects')">📚 Subjects</button>
+<button onclick="go('ask')">🤖 Ask Topic</button>
+<button onclick="go('quiz')">📝 Quiz</button>
+<button onclick="go('summary')">📅 Monthly</button>
 </div>
+
 <button onclick="go('home')">Back</button>
 </div>
 
 <!-- SUBJECTS -->
 <div id="subjects" class="page">
-<h2>Subjects</h2>
-<div class="card" onclick="showSeq('polity')">Polity</div>
-<div class="card" onclick="showSeq('geography')">Geography</div>
+<h2>📚 Subjects</h2>
+
+<div class="grid">
+<div class="card" onclick="showSeq('polity')">🏛️ Polity</div>
+<div class="card" onclick="showSeq('history')">📜 History</div>
+<div class="card" onclick="showSeq('geography')">🌍 Geography</div>
+<div class="card" onclick="showSeq('economy')">💰 Economy</div>
+<div class="card" onclick="showSeq('environment')">🌱 Environment</div>
+<div class="card" onclick="showSeq('science')">🔬 Science & Tech</div>
+<div class="card" onclick="showSeq('current')">📰 Current Affairs</div>
+<div class="card" onclick="showSeq('ethics')">⚖️ Ethics</div>
+</div>
+
 <div id="seq"></div>
+
 <button onclick="go('dash')">Back</button>
 </div>
 
 <!-- ASK -->
 <div id="ask" class="page">
-<h2>Topic Sequence</h2>
-<input id="topic">
+<h2>🤖 Topic Sequence</h2>
+<input id="topic" placeholder="Topic అడగండి">
 <button onclick="generate()">Generate</button>
 <div id="result"></div>
 <button onclick="go('dash')">Back</button>
@@ -85,16 +122,17 @@ input{width:100%;padding:12px;border-radius:10px;border:none;margin:8px 0}
 
 <!-- QUIZ -->
 <div id="quiz" class="page">
-<h2>Quiz</h2>
-<div class="card">Constitution → 1950 ✅</div>
+<h2>📝 Quiz</h2>
+<div class="card">Indian Constitution అమలు → 1950 ✅</div>
 <button onclick="go('dash')">Back</button>
 </div>
 
 <!-- SUMMARY -->
 <div id="summary" class="page">
-<h2>Monthly</h2>
+<h2>📅 Monthly</h2>
 <div class="card">Studied: Polity</div>
 <div class="card">Weak: Economy</div>
+<div class="card">Quiz Score: 60%</div>
 <button onclick="go('dash')">Back</button>
 </div>
 
@@ -102,23 +140,44 @@ input{width:100%;padding:12px;border-radius:10px;border:none;margin:8px 0}
 function go(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
 document.getElementById(id).classList.add('active')
+window.scrollTo(0,0)
 }
 
 function showSeq(s){
 let text=""
+
 if(s==="polity"){
-text="Polity: Constitution → Rights → Parliament → Judiciary"
+text="Constitution → Preamble → Rights → Parliament → Judiciary → Federalism"
+}
+if(s==="history"){
+text="Ancient → Medieval → Modern → Freedom struggle → Post independence"
 }
 if(s==="geography"){
-text="Geography: Earth → Climate → India Geography"
+text="Earth basics → Physical India → Climate → Rivers → Resources"
 }
+if(s==="economy"){
+text="Basics → Banking → Inflation → Budget → Growth → Schemes"
+}
+if(s==="environment"){
+text="Ecology → Biodiversity → Climate change → Conservation"
+}
+if(s==="science"){
+text="Physics → Biology → Space → Technology → AI"
+}
+if(s==="current"){
+text="Daily news → Monthly → Govt schemes → International"
+}
+if(s==="ethics"){
+text="Values → Integrity → Case studies → Governance"
+}
+
 document.getElementById("seq").innerHTML='<div class="card">'+text+'</div>'
 }
 
 function generate(){
 const t=document.getElementById("topic").value.toLowerCase()
 showSeq(t)
-document.getElementById("result").innerHTML='<div class="card">Generated sequence above</div>'
+document.getElementById("result").innerHTML='<div class="card">Sequence shown above</div>'
 }
 </script>
 
