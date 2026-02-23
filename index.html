@@ -5,23 +5,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Sequence AI</title>
 
-<link rel="manifest" href="data:application/json,{
-'name':'Sequence AI',
-'short_name':'Sequence',
-'start_url':'.',
-'display':'standalone',
-'background_color':'#0f172a',
-'theme_color':'#2563eb',
-'icons':[{'src':'https://cdn-icons-png.flaticon.com/512/3176/3176363.png','sizes':'192x192','type':'image/png'}]
-}">
-
 <style>
-body{
-font-family:system-ui;
-margin:0;
-background:#0f172a;
-color:#fff;
-}
+body{margin:0;font-family:system-ui;background:#020617;color:#fff}
 
 .page{display:none;padding:20px}
 .active{display:block}
@@ -35,6 +20,36 @@ height:100vh;
 text-align:center;
 }
 
+.hero{
+background:url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=1200') center/cover;
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+backdrop-filter:blur(6px);
+}
+
+.overlay{
+background:rgba(0,0,0,.55);
+position:absolute;
+inset:0;
+}
+
+.heroContent{
+position:relative;
+z-index:2;
+text-align:center;
+}
+
+.big{
+font-size:38px;
+font-weight:800;
+background:linear-gradient(90deg,#60a5fa,#22c55e,#f59e0b);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
 button{
 padding:12px 18px;
 border:none;
@@ -46,11 +61,14 @@ background:#2563eb;
 color:#fff;
 }
 
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
 .card{
-background:#1e293b;
+background:#0f172a;
 padding:14px;
 border-radius:14px;
 margin:10px 0;
+cursor:pointer;
 }
 
 input{
@@ -60,95 +78,72 @@ border-radius:10px;
 border:none;
 margin:8px 0;
 }
-
-.grid{
-display:grid;
-grid-template-columns:1fr 1fr;
-gap:10px;
-}
-
-.bigTitle{
-font-size:34px;
-font-weight:800;
-background:linear-gradient(90deg,#60a5fa,#22c55e,#f59e0b);
--webkit-background-clip:text;
--webkit-text-fill-color:transparent;
-}
 </style>
 </head>
 
 <body>
 
-<!-- VIBE INDIA PAGE -->
-<div id="home" class="page active center">
-<div class="bigTitle">🇮🇳 Sequence AI</div>
+<!-- HERO INDIA -->
+<div id="home" class="page active hero">
+<div class="overlay"></div>
+
+<div class="heroContent">
+<div class="big">Sequence AI</div>
 <p>IAS • IPS • Groups Preparation<br>తెలుగు విద్యార్థుల కోసం</p>
 <button onclick="go('dash')">Start Learning</button>
+</div>
 </div>
 
 <!-- DASHBOARD -->
 <div id="dash" class="page">
-<h2>📊 Dashboard</h2>
+<h2>Dashboard</h2>
 
 <div class="grid">
-<button onclick="go('subjects')">📚 Subjects</button>
-<button onclick="go('ask')">🤖 Ask Topic</button>
-<button onclick="go('quiz')">📝 Quiz</button>
-<button onclick="go('summary')">📅 Monthly</button>
+<button onclick="go('subjects')">Subjects</button>
+<button onclick="go('ask')">Ask Topic</button>
+<button onclick="go('quiz')">Quiz</button>
+<button onclick="go('summary')">Monthly</button>
 </div>
 
-<button onclick="go('home')">⬅ Back</button>
+<button onclick="go('home')">Back</button>
 </div>
 
 <!-- SUBJECTS -->
 <div id="subjects" class="page">
-<h2>📚 Subjects</h2>
+<h2>Subjects</h2>
 
-<div class="card">Polity</div>
-<div class="card">History</div>
-<div class="card">Geography</div>
-<div class="card">Economy</div>
-<div class="card">Science</div>
+<div class="card" onclick="openSubject('polity')">Polity</div>
+<div class="card" onclick="openSubject('history')">History</div>
+<div class="card" onclick="openSubject('geography')">Geography</div>
+<div class="card" onclick="openSubject('economy')">Economy</div>
 
-<button onclick="go('dash')">⬅ Back</button>
+<div id="subjectResult"></div>
+
+<button onclick="go('dash')">Back</button>
 </div>
 
-<!-- ASK AI -->
+<!-- ASK -->
 <div id="ask" class="page">
-<h2>🤖 Topic Sequence</h2>
-
-<input id="topic" placeholder="Topic అడగండి (ex: Indian Polity)">
-<button onclick="generate()">Generate Sequence</button>
-
+<h2>Topic Sequence</h2>
+<input id="topic">
+<button onclick="generate()">Generate</button>
 <div id="result"></div>
-
-<button onclick="go('dash')">⬅ Back</button>
+<button onclick="go('dash')">Back</button>
 </div>
 
 <!-- QUIZ -->
 <div id="quiz" class="page">
-<h2>📝 Quiz</h2>
-
-<div class="card">
-భారత రాజ్యాంగం ఎప్పుడు అమలులోకి వచ్చింది?
-<br><br>
-<button onclick="alert('❌')">1947</button>
-<button onclick="alert('✅ సరైన సమాధానం')">1950</button>
-<button onclick="alert('❌')">1949</button>
-</div>
-
-<button onclick="go('dash')">⬅ Back</button>
+<h2>Quiz</h2>
+<div class="card">Constitution అమలు → 1950 ✅</div>
+<button onclick="go('dash')">Back</button>
 </div>
 
 <!-- SUMMARY -->
 <div id="summary" class="page">
-<h2>📅 Monthly Summary</h2>
-
-<div class="card">ఈ నెల చదివినవి: Polity Basics</div>
-<div class="card">Weak Subject: Economy</div>
-<div class="card">Quiz Score: 60%</div>
-
-<button onclick="go('dash')">⬅ Back</button>
+<h2>Monthly</h2>
+<div class="card">Studied: Polity</div>
+<div class="card">Weak: Economy</div>
+<button onclick="go('dash')">Back</button>
 </div>
 
 <script>
@@ -157,43 +152,28 @@ document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
 document.getElementById(id).classList.add('active')
 }
 
-function generate(){
-const t=document.getElementById('topic').value.toLowerCase()
+function openSubject(s){
 let seq=""
 
-if(t.includes("polity")){
-seq=`
-📘 Polity Sequence:
-1. రాజ్యాంగం పరిచయం
-2. చరిత్ర
-3. పీఠిక
-4. మౌలిక హక్కులు
-5. DPSP
-6. పార్లమెంట్
-7. న్యాయవ్యవస్థ`
+if(s==="polity"){
+seq="Polity Sequence:<br>1 Constitution<br>2 Preamble<br>3 Rights<br>4 Parliament"
 }
-else if(t.includes("geography")){
-seq=`
-🌍 Geography Sequence:
-1. భూమి నిర్మాణం
-2. వాతావరణం
-3. భారత భూగోళం
-4. నదులు
-5. వ్యవసాయం`
+if(s==="geography"){
+seq="Geography Sequence:<br>1 Earth<br>2 Climate<br>3 India geography"
 }
-else{
-seq="Topic sequence త్వరలో వస్తుంది (AI mode)"
+if(s==="history"){
+seq="History Sequence:<br>Ancient → Medieval → Modern"
+}
+if(s==="economy"){
+seq="Economy Sequence:<br>Basics → Banking → Budget"
 }
 
-document.getElementById('result').innerHTML='<div class="card">'+seq+'</div>'
+document.getElementById("subjectResult").innerHTML='<div class="card">'+seq+'</div>'
 }
 
-/* PWA */
-if('serviceWorker' in navigator){
-navigator.serviceWorker.register(URL.createObjectURL(new Blob([`
-self.addEventListener('install',e=>self.skipWaiting())
-self.addEventListener('fetch',e=>{})
-`],{type:'text/javascript'})))
+function generate(){
+const t=document.getElementById('topic').value.toLowerCase()
+openSubject(t)
 }
 </script>
 
