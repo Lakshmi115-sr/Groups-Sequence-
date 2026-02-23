@@ -13,18 +13,13 @@ body{margin:0;font-family:system-ui;background:#020617;color:#fff}
 .hero{
 background:url('https://images.unsplash.com/photo-1524492412937-b28074a5d7da?q=80&w=1200') center/cover;
 height:100vh;
-display:flex;justify-content:center;align-items:center;
-flex-direction:column;text-align:center
+display:flex;justify-content:center;align-items:center;flex-direction:column;text-align:center
 }
 
 button{padding:12px 18px;border:none;border-radius:12px;margin:6px;font-weight:600;background:#2563eb;color:#fff}
-
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .card{background:#0f172a;padding:14px;border-radius:14px;margin:10px 0}
 .stat{background:#0b1220;padding:12px;border-radius:12px;margin:8px 0}
-
 input,textarea{width:100%;padding:12px;border-radius:10px;border:none;margin:8px 0}
-.small{opacity:.7;font-size:13px}
 </style>
 </head>
 
@@ -33,39 +28,26 @@ input,textarea{width:100%;padding:12px;border-radius:10px;border:none;margin:8px
 <!-- HOME -->
 <div id="home" class="page active hero">
 <h1>Sequence AI</h1>
-<p>IAS • IPS • Groups Preparation<br>తెలుగు విద్యార్థుల కోసం</p>
+<p>Topic → Sequence Learning<br>తెలుగు విద్యార్థుల కోసం</p>
 <button onclick="go('dash')">Start Learning</button>
 </div>
 
-<!-- DASH -->
+<!-- DASHBOARD -->
 <div id="dash" class="page">
 <h2>📊 Dashboard</h2>
+<div class="stat">Ask any topic → Get sequence</div>
 
-<div class="stat">Continue: <span id="continueBox">Polity basics</span></div>
-<div class="stat">Weak Subject: Economy</div>
-
-<div class="grid">
-<button onclick="go('subjects')">📚 Subjects</button>
-<button onclick="go('learn')">🧠 Learn</button>
+<button onclick="go('learn')">🧠 Learn Topic</button>
 <button onclick="go('notes')">📝 Notes</button>
-<button onclick="go('summary')">📅 Summary</button>
-</div>
 
 <button onclick="go('home')">Back</button>
-</div>
-
-<!-- SUBJECTS -->
-<div id="subjects" class="page">
-<h2>Subjects</h2>
-<div class="grid" id="subjectsGrid"></div>
-<button onclick="go('dash')">Back</button>
 </div>
 
 <!-- LEARN -->
 <div id="learn" class="page">
 <h2>Learn Topic</h2>
-<input id="topicInput" placeholder="Topic అడగండి">
-<button onclick="learnTopic()">Generate</button>
+<input id="topicInput" placeholder="Example: Kargil war / Constitution / Green revolution">
+<button onclick="learnTopic()">Generate Sequence</button>
 <div id="learnResult"></div>
 <button onclick="go('dash')">Back</button>
 </div>
@@ -79,68 +61,80 @@ input,textarea{width:100%;padding:12px;border-radius:10px;border:none;margin:8px
 <button onclick="go('dash')">Back</button>
 </div>
 
-<!-- SUMMARY -->
-<div id="summary" class="page">
-<h2>Summary</h2>
-<div class="card">Topics learned stored locally</div>
-<button onclick="go('dash')">Back</button>
-</div>
-
 <script>
 
-/* ---------- UPSC DATABASE (inside file) ---------- */
-
-const syllabus={
-polity:["Constitution","Preamble","Rights","Parliament","Judiciary"],
-history:["Ancient","Medieval","Modern","Freedom struggle"],
-geography:["Earth","Climate","India geography","Resources"],
-economy:["Basics","Banking","Inflation","Budget"],
-environment:["Ecology","Biodiversity","Climate change"],
-science:["Physics","Biology","Space","Technology"],
-current:["Daily news","Schemes","International"],
-ethics:["Values","Integrity","Case studies"]
-}
-
-/* ---------- NAV ---------- */
-
+/* NAV */
 function go(id){
 document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'))
 document.getElementById(id).classList.add('active')
 window.scrollTo(0,0)
 }
 
-/* ---------- SUBJECT RENDER ---------- */
-
-const subjectsGrid=document.getElementById("subjectsGrid")
-Object.keys(syllabus).forEach(s=>{
-subjectsGrid.innerHTML+=`<div class="card" onclick="selectSubject('${s}')">📚 ${s}</div>`
-})
-
-function selectSubject(s){
-localStorage.setItem("lastSubject",s)
-document.getElementById("continueBox").innerText=s
-go("learn")
-document.getElementById("topicInput").value=s
-learnTopic()
-}
-
-/* ---------- LEARN (offline AI style) ---------- */
-
+/* EVENT SEQUENCE ENGINE */
 function learnTopic(){
 const t=document.getElementById("topicInput").value.toLowerCase()
 
-let seq=syllabus[t]
-if(!seq){document.getElementById("learnResult").innerHTML='<div class="card">Topic not found</div>';return}
+let seq=[]
+let telugu=""
 
-let explain=`<b>Sequence:</b><br>${seq.join(" → ")}<br><br><b>తెలుగు వివరణ:</b><br>${t} గురించి ప్రాథమికంగా ఈ క్రమంలో చదవాలి.`
+/* KNOWN EXAMPLES */
 
-document.getElementById("learnResult").innerHTML='<div class="card">'+explain+'</div>'
-
-localStorage.setItem("lastTopic",t)
+if(t.includes("kargil")){
+seq=[
+"India-Pakistan tension background",
+"Pakistani infiltration into Kargil",
+"India launches Operation Vijay",
+"Major high altitude battles",
+"India recaptures peaks",
+"War ends July 1999",
+"Impact on defence reforms"
+]
+telugu="కార్గిల్ యుద్ధం 1999లో జరిగింది. పాకిస్తాన్ చొరబాటుతో ప్రారంభమై భారత్ ఆపరేషన్ విజయ్ ద్వారా ప్రాంతాలను తిరిగి స్వాధీనం చేసుకుంది."
 }
 
-/* ---------- NOTES ---------- */
+else if(t.includes("constitution")){
+seq=[
+"British rule background",
+"Demand for constitution",
+"Constituent Assembly formation",
+"Drafting committee work",
+"Adoption 1949",
+"Implementation 1950"
+]
+telugu="భారత రాజ్యాంగం స్వాతంత్ర్యానంతరం రూపొందించబడింది మరియు 1950లో అమల్లోకి వచ్చింది."
+}
 
+else if(t.includes("green revolution")){
+seq=[
+"Food shortage background",
+"Introduction of HYV seeds",
+"Irrigation expansion",
+"Fertilizer usage increase",
+"Rise in agricultural production",
+"Impact on farmers and economy"
+]
+telugu="గ్రీన్ రివల్యూషన్ భారత వ్యవసాయ ఉత్పత్తిని పెంచిన ముఖ్యమైన దశ."
+}
+
+/* GENERIC INTELLIGENT STRUCTURE */
+
+else{
+seq=[
+"Background / context",
+"Causes / reasons",
+"Key events / stages",
+"Important people / factors",
+"Outcome / result",
+"Impact / significance"
+]
+telugu="ఈ అంశాన్ని అర్థం చేసుకోవడానికి ఈ క్రమంలో చదవాలి."
+}
+
+document.getElementById("learnResult").innerHTML=
+'<div class="card"><b>Sequence:</b><br>'+seq.join(" → ")+'<br><br><b>తెలుగు వివరణ:</b><br>'+telugu+'</div>'
+}
+
+/* NOTES */
 function saveNote(){
 const text=document.getElementById("noteText").value
 if(!text)return
@@ -155,7 +149,6 @@ function renderNotes(){
 let notes=JSON.parse(localStorage.getItem("notes")||"[]")
 document.getElementById("notesList").innerHTML=notes.map(n=>`<div class="card">${n}</div>`).join("")
 }
-
 renderNotes()
 
 </script>
